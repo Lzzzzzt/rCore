@@ -1,0 +1,10 @@
+[workspace]
+
+resolver = "2"
+members = ["app", "lib"]
+
+[workspace.package]
+
+
+[profile.release]
+debug = true
