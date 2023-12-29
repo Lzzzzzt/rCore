@@ -31,11 +31,11 @@ pub fn trap_handler(cx: &mut TrapContext) -> &mut TrapContext {
             cx.x[10] = syscall(cx.x[17], [cx.x[10], cx.x[11], cx.x[12]]) as usize;
         }
         Trap::Exception(Exception::IllegalInstruction) => {
-            warn!("[KERNEL] IllegalInstruction Found, Kill it!");
+            warn!(" IllegalInstruction Found, Kill it!");
             run_next_app();
         }
         Trap::Exception(Exception::StorePageFault | Exception::StoreFault) => {
-            warn!("[KERNEL] Store Page Fault Found, Kill it!");
+            warn!(" Store Page Fault Found, Kill it!");
             run_next_app();
         }
         _ => panic!("{:?} not supported, stval = {:#x}", scause.cause(), stval),
