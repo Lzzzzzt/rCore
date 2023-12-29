@@ -50,11 +50,11 @@ struct AppManager {
 impl AppManager {
     unsafe fn load_app(&self, app_id: usize) {
         if self.num_app <= app_id {
-            info!("[KERNEL] All Applications Completed");
+            info!("All Applications Completed");
             shutdown();
         }
 
-        debug!("[KERNEL] Loading app_{}", app_id);
+        debug!("Loading app_{}", app_id);
 
         // clear app memory spcae
         core::slice::from_raw_parts_mut(APP_BASE_ADDRESS as *mut u8, APP_SIZE_LIMIT).fill(0);
@@ -78,10 +78,11 @@ impl AppManager {
     }
 
     pub fn print_app_info(&self) {
-        debug!("[KERNEL] num_app = {}", self.num_app);
+        debug!("App Number = {}", self.num_app);
+
         for i in 0..self.num_app {
             debug!(
-                "[KERNEL] app_{} [{:#x}, {:#x})",
+                " app_{} [{:#x}, {:#x})",
                 i,
                 self.app_start[i],
                 self.app_start[i + 1]
@@ -133,11 +134,6 @@ pub fn run_next_app() -> ! {
         fn __ret_to_user(cx_addr: usize);
     }
 
-    // unsafe {
-    //     debug!("KS: {:#x}", KERNEL_STACK.get_sp());
-    //     debug!("US: {:#x}", USER_STACK.get_sp());
-    // }
-
     let cx = unsafe {
         KERNEL_STACK.push_context(TrapContext::init(APP_BASE_ADDRESS, USER_STACK.get_sp()))
     };
@@ -148,13 +144,6 @@ pub fn run_next_app() -> ! {
 }
 
 pub fn init() {
-    let ksp = unsafe { KERNEL_STACK.get_sp() };
-    let usp = unsafe { USER_STACK.get_sp() };
-    debug!("Kernel Stack: [{:#x}, {:#x})", ksp - KERNEL_STACK_SIZE, ksp);
-    debug!("  User Stack: [{:#x}, {:#x})", usp - KERNEL_STACK_SIZE, usp);
-
-    debug!("");
-
     APP_MAMAGER.exclusive_access().print_app_info();
 }
 
@@ -167,11 +156,6 @@ pub fn check_address_range(addr: *const u8, len: usize) -> bool {
 
     let cur_app_space_start = APP_BASE_ADDRESS;
     let cur_app_space_end = APP_BASE_ADDRESS + app_len;
-
-    // debug!(
-    //     "app_{}: [{:#x}, {:#x})",
-    //     cur_app, cur_app_space_start, cur_app_space_end
-    // );
 
     let start = addr as usize;
     let end = start + len;

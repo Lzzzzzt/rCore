@@ -9,7 +9,7 @@ pub fn sys_write(fd: usize, buf: *const u8, len: usize) -> isize {
         let start = buf as usize;
         let end = buf as usize + len;
 
-        warn!("[KERNEL] Accessing Wrong Addr: [{:#x}, {:#x})", start, end);
+        warn!(" Accessing Wrong Addr: [{:#x}, {:#x})", start, end);
         return -1;
     }
 
