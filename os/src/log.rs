@@ -1,6 +1,5 @@
-use log::*;
-
 use crate::println;
+use log::*;
 
 struct Logger;
 

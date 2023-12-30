@@ -3,7 +3,7 @@ use std::io::{Result, Write};
 
 fn main() {
     println!("cargo:rerun-if-changed=../users/app/src/bin/");
-    println!("cargo:rerun-if-changed=../user/lib/src/");
+    println!("cargo:rerun-if-changed=../users/lib/src/");
     println!("cargo:rerun-if-changed={}", TARGET_PATH);
     insert_app_data().unwrap();
 }
@@ -14,10 +14,11 @@ fn insert_app_data() -> Result<()> {
     let mut f = File::create("src/link_app.S").unwrap();
     let mut apps: Vec<_> = read_dir("../users/app/src/bin/")
         .unwrap()
-        .flat_map(|e| e.ok())
-        .filter(|e| !e.file_name().as_os_str().to_string_lossy().starts_with('_'))
-        .map(|dir_entry| {
-            let mut name_with_ext = dir_entry.file_name().into_string().unwrap();
+        .filter_map(|entry| {
+            let name = entry.ok()?.file_name().into_string().unwrap();
+            (!name.starts_with('_')).then_some(name)
+        })
+        .map(|mut name_with_ext| {
             name_with_ext.drain(name_with_ext.find('.').unwrap()..name_with_ext.len());
             name_with_ext
         })

@@ -13,5 +13,5 @@ fn panic_handler(info: &core::panic::PanicInfo) -> ! {
         println!("Panicked at:{}", info.message().unwrap());
     }
 
-    shutdown()
+    shutdown(false)
 }

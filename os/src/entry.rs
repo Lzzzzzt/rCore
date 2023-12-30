@@ -1,6 +1,6 @@
+use crate::log::init_logger;
+use crate::sbi::shutdown;
 use log::info;
-
-use crate::{log::init_logger, sbi::shutdown};
 
 core::arch::global_asm!(include_str!("entry.asm"));
 core::arch::global_asm!(include_str!("link_app.S"));
@@ -9,7 +9,7 @@ core::arch::global_asm!(include_str!("link_app.S"));
 pub fn rust_main() -> ! {
     init();
     crate::main();
-    shutdown();
+    shutdown(false);
 }
 
 fn init() {
@@ -44,3 +44,5 @@ fn clear_bss() {
 
     unsafe { (sbss as usize..ebss as usize).for_each(|m| (m as *mut u8).write_volatile(0)) }
 }
+
+
