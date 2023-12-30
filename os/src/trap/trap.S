@@ -1,3 +1,4 @@
+.attribute arch, "rv64gc"
 .altmacro
 .macro SAVE_GP n
     sd x\n, \n*8(sp)
@@ -8,7 +9,7 @@
 
     .section .text
     .globl __all_traps
-    .globl __ret_to_user
+    .globl __trap_return
     .align 2
 __all_traps:
     csrrw sp, sscratch, sp
@@ -33,15 +34,16 @@ __all_traps:
     sd t1, 33*8(sp)
     # read user stack from sscratch and save it on the kernel stack
     csrr t2, sscratch
+    fsd fs0, 34*8(sp)
+    fsd fs1, 35*8(sp)
     sd t2, 2*8(sp)
     # set input argument of trap_handler(cx: &mut TrapContext)
     mv a0, sp
     call trap_handler
 
-__ret_to_user:
-    # case1: start running app by __ret_to_user
+__trap_return:
+    # case1: start running app by __trap_return
     # case2: back to U after handling trap
-    mv sp, a0
     # now sp->kernel stack(after allocated), sscratch->user stack
     # restore sstatus/sepc
     ld t0, 32*8(sp)
@@ -58,6 +60,8 @@ __ret_to_user:
         LOAD_GP %n
         .set n, n+1
     .endr
+    fld fs0, 34*8(sp)
+    fld fs1, 35*8(sp)
     # release TrapContext on kernel stack
     addi sp, sp, 34*8
     # now sp->kernel stack, sscratch->user stack

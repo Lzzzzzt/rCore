@@ -28,16 +28,6 @@ fn clear_bss() {
     });
 }
 
-use syscall::*;
-
-pub fn write(fd: usize, buf: &[u8]) -> isize {
-    sys_write(fd, buf)
-}
-pub fn exit(exit_code: i32) -> ! {
-    sys_exit(exit_code);
-    unreachable!()
-}
-
 #[panic_handler]
 pub fn panic_handler(panic_info: &core::panic::PanicInfo) -> ! {
     let err = panic_info.message().unwrap();
@@ -52,4 +42,30 @@ pub fn panic_handler(panic_info: &core::panic::PanicInfo) -> ! {
         println!("Panicked: {}", err);
     }
     exit(-1);
+}
+
+use core::time::Duration;
+use syscall::*;
+
+pub fn write(fd: usize, buf: &[u8]) -> isize {
+    sys_write(fd, buf)
+}
+pub fn exit(exit_code: i32) -> ! {
+    sys_exit(exit_code);
+    unreachable!()
+}
+pub fn r#yield() -> isize {
+    sys_yield()
+}
+
+pub fn get_time() -> Duration {
+    Duration::from_micros(sys_get_time() as u64)
+}
+
+pub fn sleep(ms: u64) {
+    let wait_for = sys_get_time() + ms as isize * 1000;
+
+    while sys_get_time() < wait_for {
+        sys_yield();
+    }
 }

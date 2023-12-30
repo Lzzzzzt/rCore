@@ -1,8 +1,17 @@
+use crate::{tasks, timer};
 use log::info;
 
-use crate::batch::run_next_app;
-
 pub fn sys_exit(state: i32) -> ! {
-    info!(" Exited with {}", state);
-    run_next_app()
+    info!("Exited with {}", state);
+    tasks::exit_current_then_run_next();
+    unreachable!()
+}
+
+pub fn sys_yield() -> isize {
+    tasks::suspend_current_then_run_next();
+    0
+}
+
+pub fn sys_get_time() -> isize {
+    timer::Time::now().as_micros() as isize
 }

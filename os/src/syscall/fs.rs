@@ -1,18 +1,9 @@
+use crate::print;
 use log::warn;
-
-use crate::{batch::check_address_range, print};
 
 const FD_STDOUT: usize = 1;
 
 pub fn sys_write(fd: usize, buf: *const u8, len: usize) -> isize {
-    if !check_address_range(buf, len) {
-        let start = buf as usize;
-        let end = buf as usize + len;
-
-        warn!(" Accessing Wrong Addr: [{:#x}, {:#x})", start, end);
-        return -1;
-    }
-
     match fd {
         FD_STDOUT => {
             let output_bytes = unsafe { core::slice::from_raw_parts(buf, len) };
