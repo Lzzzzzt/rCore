@@ -1,5 +1,5 @@
-use core::ops::AddAssign;
-use core::time::Duration;
+use self::switch::_switch;
+use self::task::TaskControlBlock;
 
 use crate::config::*;
 use crate::loader::init_app_context;
@@ -10,11 +10,12 @@ use crate::tasks::switch::print_switch_cost;
 use crate::tasks::task::TaskStatus;
 use crate::timer::Time;
 use crate::utils::get_app_num;
+
+use core::ops::AddAssign;
+use core::time::Duration;
+
 use lazy_static::lazy_static;
 use log::{debug, info};
-
-use self::switch::_switch;
-use self::task::TaskControlBlock;
 
 mod context;
 mod switch;
