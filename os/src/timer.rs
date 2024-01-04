@@ -17,7 +17,7 @@ pub struct Time {
 }
 
 impl Time {
-    pub fn now() -> Self {
+    pub fn up_time() -> Self {
         Self {
             start: Duration::from_micros(time::read64() * MICRO_PER_SECOND / CLOCK_FREQ),
         }
@@ -28,7 +28,7 @@ impl Time {
     }
 
     pub fn elapsed(&self) -> Duration {
-        Time::now().duration_since(*self)
+        Time::up_time().duration_since(*self)
     }
 
     pub fn elapsed_and_update(&mut self) -> Duration {
