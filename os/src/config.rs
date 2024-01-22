@@ -6,3 +6,5 @@ pub const KERNEL_STACK_SIZE: usize = 1 << 12;
 pub const USER_STACK_SIZE: usize = 1 << 12;
 
 pub const CLOCK_FREQ: u64 = 10000000;
+
+pub const KERNEL_HEAP_SIZE: usize = 0x30_0000;

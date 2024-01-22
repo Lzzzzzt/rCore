@@ -35,7 +35,7 @@ lazy_static! {
 
         TaskManager {
             app_num,
-            inner: unsafe { UPSafeCell::new(TaskManagerInner { tasks, current: 0, time: Time::up_time() }) },
+            inner: unsafe { UPSafeCell::new(TaskManagerInner { tasks, current: 0, time: Time::current_up_time() }) },
         }
     };
 }

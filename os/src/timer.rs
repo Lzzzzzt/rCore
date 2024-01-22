@@ -1,6 +1,6 @@
 use crate::config::CLOCK_FREQ;
 use crate::sbi::set_timer;
-use core::ops::{AddAssign, Deref, DerefMut};
+use core::ops::{Deref, DerefMut};
 use core::time::Duration;
 use riscv::register::time;
 
@@ -17,7 +17,7 @@ pub struct Time {
 }
 
 impl Time {
-    pub fn up_time() -> Self {
+    pub fn current_up_time() -> Self {
         Self {
             start: Duration::from_micros(time::read64() * MICRO_PER_SECOND / CLOCK_FREQ),
         }
@@ -28,12 +28,12 @@ impl Time {
     }
 
     pub fn elapsed(&self) -> Duration {
-        Time::up_time().duration_since(*self)
+        Time::current_up_time().duration_since(*self)
     }
 
     pub fn elapsed_and_update(&mut self) -> Duration {
         let elasped = self.elapsed();
-        self.start.add_assign(elasped);
+        self.start += elasped;
         elasped
     }
 
@@ -55,5 +55,11 @@ impl Deref for Time {
 impl DerefMut for Time {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.start
+    }
+}
+
+impl From<Duration> for Time {
+    fn from(value: Duration) -> Self {
+        Self { start: value }
     }
 }

@@ -13,5 +13,5 @@ pub fn sys_yield() -> isize {
 }
 
 pub fn sys_get_time() -> isize {
-    timer::Time::up_time().as_micros() as isize
+    timer::Time::current_up_time().as_micros() as isize
 }

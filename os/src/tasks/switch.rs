@@ -16,7 +16,7 @@ extern "C" {
 
 pub fn _switch(cur_task_ctx_p: *mut TaskContext, nxt_task_ctx_p: *const TaskContext) {
     unsafe {
-        SWITCH_START = Time::up_time();
+        SWITCH_START = Time::current_up_time();
         __switch(cur_task_ctx_p, nxt_task_ctx_p);
         SWITCH_COST.add_assign(SWITCH_START.elapsed());
     }

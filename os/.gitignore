@@ -1,3 +1,4 @@
 /target
 .vscode
 src/link_app.S
+Cargo.lock

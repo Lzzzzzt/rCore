@@ -1,5 +1,6 @@
 use crate::log::init_logger;
 use crate::sbi::shutdown;
+use crate::{loader, memory_map, timer, trap, utils};
 use log::info;
 
 core::arch::global_asm!(include_str!("entry.asm"));
@@ -34,6 +35,13 @@ fn init() {
     info!(".RODATA [{:#x}, {:#x})", srodata as usize, erodata as usize);
     info!(".DATA   [{:#x}, {:#x})", sdata as usize, edata as usize);
     info!(".BSS    [{:#x}, {:#x})", sbss as usize, ebss as usize);
+
+    trap::init();
+    memory_map::heap::init();
+    utils::enable_float_ins();
+    loader::load_apps();
+    trap::enable_timer_interrupt();
+    timer::set_next_trigger();
 }
 
 fn clear_bss() {
@@ -44,5 +52,3 @@ fn clear_bss() {
 
     unsafe { (sbss as usize..ebss as usize).for_each(|m| (m as *mut u8).write_volatile(0)) }
 }
-
-
